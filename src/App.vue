@@ -15,3 +15,8 @@ export default {
   })
 };
 </script>
+<style>
+#app {
+  background-color: wheat;
+}
+</style>
