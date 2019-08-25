@@ -43,6 +43,51 @@
           </v-row>
         </v-card>
       </v-col>
+      <v-col>
+        <div class="title bold">Select your date of stay</div>
+        <v-menu v-model="startMenu" transition="scale-transition" offset-y min-width="290px">
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="startDate"
+              label="start date"
+              readonly
+              v-on="on"
+              prepend-icon="mdi-calendar-range"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="startDate" no-title scrollable :allowed-dates="startAllowedDate">
+            <div class="flex-grow-1"></div>
+          </v-date-picker>
+        </v-menu>
+        <v-menu v-model="endMenu" transition="scale-transition" offset-y min-width="290px">
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="endDate"
+              label="end date"
+              readonly
+              v-on="on"
+              prepend-icon="mdi-calendar-range"
+              :rules="endDateRules"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="endDate" no-title scrollable :allowed-dates="endAllowedDate">
+            <div class="flex-grow-1"></div>
+          </v-date-picker>
+        </v-menu>
+        <v-row justify="end">
+          <v-col cols="auto">
+            <div class="pa-3 pt-0">
+              平日價格: NT
+              <span class="red--text">{{normalDayPrice}}</span> 元/晚
+            </div>
+            <div class="pa-3 pb-4">假日價格: NT {{holidayPrice}} 元/晚</div>
+            <v-btn block class="green lighten-3">預訂房間</v-btn>
+          </v-col>
+        </v-row>
+        <v-card>
+          <v-card-title class="title mt-3">其他推薦</v-card-title>
+        </v-card>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -67,9 +112,21 @@ export default {
       bed: [],
       privateBath: 0,
       footage: 0,
-      amenities: {}
+      amenities: {},
+      currentDate: new Date().toISOString().substr(0, 10),
+      startDate: "",
+      startMenu: false,
+      endDate: "",
+      endMenu: false,
+      endDateRules: [
+        value => value > this.startDate || "end date should after start date."
+      ],
+      durationDates: [],
+      normalDayPrice: 0,
+      holidayPrice: 0
     };
   },
+
   created() {
     this.roomId = this.$route.params.roomId;
     this.axios.get(this.API + this.roomId).then(response => {
@@ -90,6 +147,8 @@ export default {
       this.privateBath = roomData.descriptionShort["Private-Bath"];
       this.footage = roomData.descriptionShort.Footage;
       this.description = roomData.description;
+      this.normalDayPrice = roomData.normalDayPrice;
+      this.holidayPrice = roomData.holidayPrice;
       console.log(response.data);
     });
   },
@@ -103,6 +162,12 @@ export default {
       } else {
         return "error";
       }
+    },
+    startAllowedDate(val) {
+      return val >= this.currentDate;
+    },
+    endAllowedDate(val) {
+      return val > this.currentDate && val > this.startDate;
     }
   }
 };

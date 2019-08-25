@@ -7,10 +7,10 @@
         </v-card>
       </v-col>
       <v-col cols="5">
-        <v-card class="overflow" flat :height="cardHeight">
-          <v-col v-for="(item, index) in roomPictures" :key="index" class="pt-0">
+        <v-card class="overflow" flat :height="cardHeight" color="transparent">
+          <v-col v-for="(item, index) in roomPictures" :key="index" class="py-1">
             <v-hover v-slot:default="{ hover }">
-              <v-card :elevation="hover ? 10 : 0" class="cursor">
+              <v-card :elevation="hover ? 12 : 2" class="cursor">
                 <v-img
                   class="white--text"
                   :src="item"
