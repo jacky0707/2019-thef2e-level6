@@ -27,3 +27,6 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Demo page
+https://jacky0707.github.io/2019-thef2e-level6/#/
